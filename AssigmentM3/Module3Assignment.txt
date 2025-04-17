@@ -2,3 +2,44 @@ Try to use web hook
 Faces problem.
 Problem with npm.
 Try to show web hook is fired or not.
+
+finally done.
+
+pipeline {
+    agent { 
+        label 'master'
+    }
+    tools {
+        nodejs 'NodeJS22.14.0'
+    }
+    stages {
+        stage('Clone') {
+            steps {
+                echo 'Cloning repository...'
+                git branch: 'main', url: 'https://github.com/MominurRahman90/OSTAD-Assignment-module-3'
+            }
+        }
+
+        stage('Install') {
+            steps {
+                echo 'Installing dependencies...'
+                sh 'npm install'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'npm run check'
+            }
+        }
+    }
+ post {
+        failure {
+            script {
+                echo 'Tests failed. Marking pipeline as failed.'
+                currentBuild.result = 'FAILURE'
+            }
+        }
+    }
+}
